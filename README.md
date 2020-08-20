@@ -43,5 +43,5 @@ These instructions should work but I didn't test it, tell me if you encounter an
 ```shell
 git clone https://github.com/Ninlives/animated-wallpaper
 cd animated-wallpaper
-cmake && make && make install
+cmake . && make && make install
 ```
