@@ -22,8 +22,8 @@ namespace Wallpaper {
 
     public static void main (string [] args) {
 
-        if(args[1] == "--help" || args[1] == "-h") {
-            print("Usage:\n\tanimated-wallpaper [FILE]");
+        if(args[1] == "--help" || args[1] == "-h" || args.length == 1) {
+            print("Usage:\n\tanimated-wallpaper [FILE] [FLAG]");
             print("\n\t--span || -s To stretch video across all monitors\n");
             return;
         }
