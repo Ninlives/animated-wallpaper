@@ -22,9 +22,15 @@ namespace Wallpaper {
 
     public static void main (string [] args) {
 
-        if(args[1] == "--help" || args[1] == "-h" || args.length != 2) {
-            print("Usage:\n\tanimated-wallpaper [FILE]");
+        if(args[1] == "--help" || args[1] == "-h" || args.length == 1) {
+            print("Usage:\n\tanimated-wallpaper [FILE] [FLAG]");
+            print("\n\t--span || -s To stretch video across all monitors\n");
             return;
+        }
+
+        bool spanMonitors = false;
+        for(int i = 0; i < args.length; i++) {
+            if(args[i] == "--span" || args[i] == "-s") spanMonitors = true;
         }
 
         GtkClutter.init (ref args);
@@ -37,7 +43,10 @@ namespace Wallpaper {
         backgroundWindows = new BackgroundWindow[monitorCount];
         string fileName = args[1];
         for (int i = 0; i < monitorCount; ++i)
-            backgroundWindows[i] = new BackgroundWindow(i, fileName);
+            backgroundWindows[i] = new BackgroundWindow(i,
+                                                        fileName,
+                                                        monitorCount,
+                                                        spanMonitors);
 
         var mainSettings = Gtk.Settings.get_default ();
         mainSettings.set("gtk-xft-antialias", 1, null);

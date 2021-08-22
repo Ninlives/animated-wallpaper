@@ -33,12 +33,15 @@ namespace Playable {
 
 		Clutter.Actor wallpaperActor = new Clutter.Actor();
 
-		public BackgroundWindow (int monitorIndex, string fileName) {
+		public BackgroundWindow (int monitorIndex,
+                                 string fileName,
+                                 int monitorCount,
+                                 bool spanMonitors) {
 
 			title = "Desktop";
 
 			// Get current monitor size
-			getMonitorSize(monitorIndex);
+			getMonitorSize(monitorIndex, monitorCount, spanMonitors);
 
             embed = new GtkClutter.Embed() {width_request = screenWidth, height_request = screenHeight};
             mainActor = embed.get_stage();
@@ -71,7 +74,7 @@ namespace Playable {
 			add(embed);
 		}
 
-		void getMonitorSize(int monitorIndex) {
+		void getMonitorSize(int monitorIndex, int monitorCount, bool spanMonitors) {
 
 			Rectangle rectangle;
 			var screen = Gdk.Screen.get_default ();
@@ -79,7 +82,8 @@ namespace Playable {
 			screen.get_monitor_geometry (monitorIndex, out rectangle);
 
 			screenHeight = rectangle.height;
-			screenWidth = rectangle.width;
+			if(spanMonitors) screenWidth = rectangle.width*monitorCount;
+			else screenWidth = rectangle.width;
 
 			move(rectangle.x, rectangle.y);
 
@@ -104,7 +108,7 @@ namespace Playable {
             });
 
             wallpaperActor.scale_y = 1.00f;
-            wallpaperActor.scale_x = 1.00f;   
+            wallpaperActor.scale_x = 1.00f;
 
             videoPlayback.set_filename(fileName);
             videoPlayback.playing = true;
@@ -115,8 +119,8 @@ namespace Playable {
 
         // void setImageWallpaper(string fileName) {
         //     wallpaperActor.scale_y = 1.05f;
-        //     wallpaperActor.scale_x = 1.05f;   
-        //     
+        //     wallpaperActor.scale_x = 1.05f;
+        //
         //     Gtk.Image image = new Gtk.Image.from_file(fileName);
         //     GtkClutter.Actor actor = new GtkClutter.Actor.with_contents(image);
         //     actor.set_size(screenWidth, screenHeight);
