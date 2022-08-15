@@ -21,18 +21,36 @@ namespace Wallpaper {
     BackgroundWindow[] backgroundWindows;
 
     public static void main (string [] args) {
-
-        if(args[1] == "--help" || args[1] == "-h" || args.length != 2) {
-            print("Usage:\n\tanimated-wallpaper [FILE]");
+        string displayName = "";
+	bool isDisplay = false;
+        Gdk.Screen screen;
+        Gdk.Display display;
+        if(args[1] == "--help" || args[1] == "-h" || (args.length != 2 && args.length != 4)) {
+            print("Usage:\n\tanimated-wallpaper [FILE] \n\tor: animated-wallpaper [FILE] -s [displayName]\n\tor: animated-wallpaper [FILE] --screen [displayName]\n");
             return;
         }
-
+        if(args.length == 4 && (args[2] == "-s" || args[2] == "--screen")) {
+            displayName = args[3];
+            isDisplay = true;
+            print("Trying to use display: " + displayName + "\n");
+        }
         GtkClutter.init (ref args);
         Gtk.init (ref args);
         Gst.init (ref args);
 
-        var screen = Gdk.Screen.get_default ();
-        int monitorCount = screen.get_n_monitors();
+        int monitorCount;
+        if(isDisplay) {
+            display = Gdk.Display.open(displayName);
+            if(display.get_name() != displayName) {
+                print("Error: Can't open display " + displayName + "\n");
+                return;
+            }
+            monitorCount = display.get_n_monitors();
+        }
+        else {
+            screen = Gdk.Screen.get_default();
+            monitorCount = screen.get_n_monitors();
+        }
 
         backgroundWindows = new BackgroundWindow[monitorCount];
         string fileName = args[1];
